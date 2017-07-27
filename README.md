@@ -1,0 +1,2 @@
+# Hi.Shared.BrentsCoolCopyRendLangVersModule
+Hi.Shared.BrentsCoolCopyRendLangVersModule
