@@ -56,6 +56,7 @@ namespace Hi.Shared.BrentsCoolCopyRendLangVersModule
             if (dd != null)
             {
                 rd.UniqueId = string.Empty;
+                rd.MultiVariateTest = string.Empty; // clear this out since I haven't tested how it works.
                 dd.AddRendering(rd);
                 using (new SecurityDisabler())
                 {
