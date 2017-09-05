@@ -87,7 +87,10 @@ namespace Hi.Shared.BrentsCoolCopyRendLangVersModule
             {
                 if (args.Result == "yes")
                 {
-                    TryCopy(deviceId, uniqueId, contextItemUri);
+                    if (!RunCopy(deviceId, uniqueId, contextItemUri))
+                    {
+                        SheerResponse.Alert("Cannont copy this rendering. Please save first.");
+                    }
                 }
             }
             else
@@ -104,22 +107,24 @@ namespace Hi.Shared.BrentsCoolCopyRendLangVersModule
             }
         }
         
-        public void TryCopy(string deviceId, string uniqueId, string contextItemUri)
+        public bool RunCopy(string deviceId, string uniqueId, string contextItemUri)
         {
-            var i = Database.GetItem(new ItemUri(contextItemUri));
-            var rd = i.GetRenderingDefinitionByUniqueId(uniqueId, deviceId);
+            Item i = Database.GetItem(new ItemUri(contextItemUri));
+            RenderingDefinition rd = i.GetRenderingDefinitionByUniqueId(uniqueId, deviceId);
             if (i != null && rd != null)
             {
-                var list = i.Languages.Where(e => !e.CultureInfo.Name.Equals(i.Language.CultureInfo.Name)).ToList();
-                foreach (var l in list)
+                List<Language> langList = i.Languages.Where(e => !e.CultureInfo.Name.Equals(i.Language.CultureInfo.Name)).ToList();
+                foreach (Language l in langList)
                 {
-                    var li = i.Database.GetItem(i.ID, l);
-                    if (li.IsNotNull())
+                    Item li = i.Database.GetItem(i.ID, l);
+                    if (li != null && li.Versions.Count > 0)
                     {
                         li.CopyRenderingReference(rd, deviceId);
                     }
                 }
+                return true;
             }
+            return false;
         }
     }
 }
